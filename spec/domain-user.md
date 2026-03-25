@@ -13,6 +13,9 @@ The User module is tasked with user identity, onboarding, and profile discovery,
 - `emailAddress` (`string`): Primary user identification and login credential.
 - `companyId` (`long`): A foreign reference to the associated company (part of an upcoming multi-tenant configuration).
 
+### Components
+- **`UserRepository`** (`user.repository.ts`): Asynchronously implements the generic `Repository<User>` interface for data access.
+
 ---
 
 ## ⚙️ Core Logic

@@ -1,6 +1,6 @@
 import { Injectable, ConflictException, NotFoundException, InternalServerErrorException } from '@nestjs/common';
 import { User } from './user.model';
-import { UserRepository } from './user.repository';
+import { UserRepositoryPort } from './user.repository.port';
 import { CreateUserDto } from './dto/create-user.dto';
 import pino from 'pino';
 import { Counter, Histogram } from 'prom-client';
@@ -50,14 +50,14 @@ const userFindByEmailDuration = new Histogram({
 
 @Injectable()
 export class UserService {
-  constructor(private readonly repo: UserRepository) {}
+  constructor(private readonly repo: UserRepositoryPort) {}
 
-  registerUser(dto: CreateUserDto): User {
+  async registerUser(dto: CreateUserDto): Promise<User> {
     const endTimer = userRegistrationDuration.startTimer();
     logger.info({ email: dto.emailAddress }, 'Starting user registration');
 
     try {
-      const existing = this.repo.findByEmail(dto.emailAddress);
+      const existing = await this.repo.findByEmail(dto.emailAddress);
       if (existing) {
         userRegistrationConflictCounter.inc();
         logger.warn({ email: dto.emailAddress }, 'Attempt to register user with existing email address');
@@ -71,7 +71,7 @@ export class UserService {
         companyId: dto.companyId,
       };
 
-      const result = this.repo.create(newUser);
+      const result = await this.repo.save(newUser);
       userRegistrationCounter.inc();
       logger.info({ email: dto.emailAddress }, 'User registered successfully');
       return result;
@@ -86,10 +86,10 @@ export class UserService {
     }
   }
 
-  findUserByEmailAddress(email: string): User {
+  async findUserByEmailAddress(email: string): Promise<User> {
     const endTimer = userFindByEmailDuration.startTimer();
     try {
-      const user = this.repo.findByEmail(email);
+      const user = await this.repo.findByEmail(email);
       if (!user) {
         userFindByEmailNotFoundCounter.inc();
         logger.warn({ email }, 'User not found by email address');

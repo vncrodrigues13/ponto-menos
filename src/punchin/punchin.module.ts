@@ -1,10 +1,19 @@
 import { Module } from '@nestjs/common';
 import { PunchinController } from './punchin.controller';
 import { PunchinService } from './punchin.service';
-import { PunchinRepository } from './punchin.repository';
+import { InMemoryPunchinRepository } from './inmemorypunchin.repository';
+import { PunchinRepositoryPort } from './punchin.repository.port';
+import { UserModule } from '../user/user.module';
 
 @Module({
   controllers: [PunchinController],
-  providers: [PunchinService, PunchinRepository],
+  providers: [
+    PunchinService,
+    {
+      provide: PunchinRepositoryPort,
+      useClass: InMemoryPunchinRepository,
+    },
+  ],
+  imports: [UserModule],
 })
-export class PunchinModule {}
+export class PunchinModule { }

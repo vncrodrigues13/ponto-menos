@@ -30,4 +30,4 @@ A core architectural pillar is built-in telemetry:
 The environment emphasizes deterministic execution across platforms:
 - **Composition:** A single `docker-compose.yaml` manages the `app`, `prometheus`, and `grafana` services.
 - **Local Testing:** Shell-based test scripts using `curl` simulate API traffic (e.g., `test/punchin-tests-requests.sh`).
-- **Data Persistence:** Currently leveraging in-memory array stores (`ArrayList`) behind Repository classes (`*Repository`). This abstract layered design prepares the system for easy migration to a fully persisted database using an ORM like TypeORM or Prisma in the future.
+- **Data Persistence:** Currently leveraging in-memory array stores behind Repository classes (`*Repository`). These repositories implement a new generic, fully asynchronous `Repository<T>` interface (`src/common/interfaces/repository.interface.ts`) embodying the ports and adapters architecture. This ensures the system is completely decoupled and prepared for easy migration to a fully persisted database like TypeORM or Prisma in the future.

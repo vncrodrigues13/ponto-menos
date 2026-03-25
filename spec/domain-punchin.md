@@ -12,15 +12,20 @@ The `PunchinModule` is a feature-specific NestJS module managing the domain of u
 - **`PunchinController`** (`punchin.controller.ts`):
     - **`POST /punchin`**: Records a new punch-in event.
     - **`GET /punchin`**: Lists all recorded punch-in events.
+    - **`GET /punchin?emailAddress={email}`**: Endpoint to list all punchins from a specific user (`getPunchinsFromUser`). Validates the `emailAddress` query parameter, returning a 400 if invalid, a 404 if the user does not exist, and a 200 with the list of punch-ins otherwise.
     - Prom-client integration: Maintains a custom `punchin_controller_counter` incrementing on each recorded event.
 - **`PunchinService`** (`punchin.service.ts`):
     - Core business logic.
     - Resolves and validates the JWT `authToken` from incoming requests to extract the user's `emailAddress`.
     - Enforces authentication by throwing `UnauthorizedException` if the token is missing, empty, or strictly invalid.
+    - **Validates User Existence:** Prior to translating and saving any new `PunchinEntry`, it looks up the explicit user via `UserService.findUserByEmailAddress()`; throwing a `NotFoundException` if the account does not actually exist.
     - Translates the incoming DTO to the internal `PunchinEntry` representation.
+    - **`getPunchinsFromUser(emailAddress: string)`**: Retrieves all punch-ins associated with a specific user. Handles validation logic (e.g., verifying user existence) before requesting data from the repository.
 - **`PunchinRepository`** (`punchin.repository.ts`):
     - The active data layer for this domain.
+    - Asynchronously implements the generic `Repository<PunchinEntry>` interface, ensuring decoupled persistence.
     - Presently an in-memory array store meant to be substituted later with a permanent ORM/Database connection.
+    - **`getPunchinsFromUser(emailAddress: string)`**: Queries the data layer to fetch all stored `PunchinEntry` records that match the provided `userEmail`.
 
 ---
 
