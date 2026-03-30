@@ -40,3 +40,10 @@ The `PunchinModule` is a feature-specific NestJS module managing the domain of u
 - `timestamp` (`string`): ISO date string representation of the client's current time.
 - `platform` (`string`): The originating platform.
 - `authToken` (`string`): A secure JWT authentication token passed to the service to extract and verify the user's identity.
+
+---
+
+## 📝 API Documentation
+All endpoints, query parameters, expected responses, and DTOs within the Punch-in module are fully documented using Swagger/OpenAPI.
+- Data Transfer Objects (`CreatePunchinDto`) utilize `@ApiProperty` decorators.
+- The `PunchinController` is mapped using `@ApiTags('punchins')`, `@ApiOperation()`, and appropriate `@ApiResponse()` and `@ApiQuery()` decorators to facilitate testing and client integration.

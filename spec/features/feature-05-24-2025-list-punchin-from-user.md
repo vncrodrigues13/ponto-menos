@@ -16,11 +16,11 @@ Let's create a new Get Endpoint, which would recieve a emailAddress as a query p
 
 
 ## TODO
-- [ ] Create a service on punchin.service and punchin.repository, getPunchinsFromUser, which will return all punchins from that user
-- [ ] Create a endpoint on punchin.controller, getPunchinsFromUser, which will return all punchins from that user
-- [ ] Create a route on punchin.routes, getPunchinsFromUser, which will return all punchins from that user
+- [x] Create a service on punchin.service and punchin.repository, getPunchinsFromUser, which will return all punchins from that user
+- [x] Create a endpoint on punchin.controller, getPunchinsFromUser, which will return all punchins from that user
+- [x] Create a route on punchin.routes, getPunchinsFromUser, which will return all punchins from that user
 
 ## Tests
-- [ ] Test the endpoint with a valid emailAddress
-- [ ] Test the endpoint with an invalid emailAddress
-- [ ] Test the endpoint with an emailAddress that has no punchins
+- [x] Test the endpoint with a valid emailAddress
+- [x] Test the endpoint with an invalid emailAddress
+- [x] Test the endpoint with an emailAddress that has no punchins

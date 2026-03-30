@@ -55,3 +55,10 @@ Using `pino`, log structured events for:
 - Negative flows: Failed registrations on pre-existing emails.
 - General exceptions and errors encountered during registration.
 - General exceptions and errors encountered during user discovery.
+
+---
+
+## 📝 API Documentation
+All endpoints, queries, and responses within the User module are documented using Swagger/OpenAPI.
+- The `CreateUserDto` payload uses `@ApiProperty` decorators to define schema expectations.
+- The `UserController` is labeled with `@ApiTags('users')`, alongside `@ApiOperation()`, `@ApiQuery()`, and `@ApiResponse()` decorators, making the endpoints easily discoverable and testable via the Swagger UI.

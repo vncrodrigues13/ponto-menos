@@ -5,6 +5,8 @@ import { UserService } from '../user/user.service';
 import { NotFoundException } from '@nestjs/common';
 import * as jwt from 'jsonwebtoken';
 
+jest.mock('jsonwebtoken');
+
 describe('PunchinService', () => {
   let service: PunchinService;
   let userService: jest.Mocked<UserService>;
@@ -54,8 +56,8 @@ describe('PunchinService', () => {
 
     it('should throw NotFoundException with "User not found" if user does not exist', async () => {
       // Mock the JWT decode so it successfully resolves to an email
-      jest.spyOn(jwt, 'decode').mockReturnValue({ emailAddress: 'notfound@example.com' });
-      
+      (jwt.verify as jest.Mock).mockReturnValue({ emailAddress: 'notfound@example.com' } as any);
+
       // Simulate UserService throwing a default NotFoundException...
       userService.findUserByEmailAddress.mockRejectedValue(
         new NotFoundException('User with email notfound@example.com not found')
@@ -63,14 +65,14 @@ describe('PunchinService', () => {
 
       // We assert that PunchinService.record correctly overwrites the message to 'User not found'
       await expect(service.record(dto)).rejects.toThrow(new NotFoundException('User not found'));
-      
+
       // The punchin must definitively not be saved!
       expect(repo.save).not.toHaveBeenCalled();
     });
 
     it('should successfully save the punchin if the user exists', async () => {
-      jest.spyOn(jwt, 'decode').mockReturnValue({ emailAddress: 'exists@example.com' });
-      
+      (jwt.verify as jest.Mock).mockReturnValue({ emailAddress: 'exists@example.com' } as any);
+
       // Simulate UserService successfully returning a user object...
       userService.findUserByEmailAddress.mockResolvedValue({ fullName: 'John Doe' } as any);
       repo.save.mockResolvedValue({ timestamp: dto.timestamp } as any);

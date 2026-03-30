@@ -7,9 +7,9 @@ i want to add swagger on controllers, that would facilitate the testing of the e
 - Update the bootstrap function in `main.ts` to build and mount the Swagger module.
 
 ## TODO
-- [ ] add required dependencies (`@nestjs/swagger`, `swagger-ui-express`)
-- [ ] setup Swagger DocumentBuilder in `main.ts` and mount it to `/api`
-- [ ] add `@ApiTags()`, `@ApiOperation()`, and `@ApiResponse()` annotations to the `user.controller.ts` and `punchin.controller.ts`
-- [ ] add `@ApiProperty()` annotations to the related DTOs (e.g. `CreatePunchinDto`, etc.)
-- [ ] setup authentication definitions in `main.ts` and secure the endpoints in controllers (if there is bearer token auth)
-- [ ] validate if the swagger is working by accessing the http://localhost:3000/api endpoint
+- [x] add required dependencies (`@nestjs/swagger`, `swagger-ui-express`)
+- [x] setup Swagger DocumentBuilder in `main.ts` and mount it to `/api`
+- [x] add `@ApiTags()`, `@ApiOperation()`, and `@ApiResponse()` annotations to the `user.controller.ts` and `punchin.controller.ts`
+- [x] add `@ApiProperty()` annotations to the related DTOs (e.g. `CreatePunchinDto`, etc.)
+- [x] setup authentication definitions in `main.ts` and secure the endpoints in controllers (if there is bearer token auth)
+- [x] validate if the swagger is working by accessing the http://localhost:8080/api endpoint
