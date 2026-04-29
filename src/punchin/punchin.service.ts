@@ -1,4 +1,8 @@
-import { Injectable, UnauthorizedException, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  UnauthorizedException,
+  NotFoundException,
+} from '@nestjs/common';
 import * as jwt from 'jsonwebtoken';
 import { PunchinEntry } from './punchin.model';
 import { PunchinRepositoryPort } from './punchin.repository.port';
@@ -9,7 +13,7 @@ import { UserService } from '../user/user.service';
 export class PunchinService {
   constructor(
     private readonly repo: PunchinRepositoryPort,
-    private readonly userService: UserService
+    private readonly userService: UserService,
   ) {}
 
   /**
@@ -18,7 +22,7 @@ export class PunchinService {
    */
   async record(dto: CreatePunchinDto): Promise<PunchinEntry> {
     const userEmail = this.resolveEmail(dto.authToken);
-    
+
     try {
       await this.userService.findUserByEmailAddress(userEmail);
     } catch (error) {
@@ -48,22 +52,32 @@ export class PunchinService {
 
   private resolveEmail(token: string): string {
     if (!token || token.trim() === '') {
-      throw new UnauthorizedException('Authentication token is missing or empty');
+      throw new UnauthorizedException(
+        'Authentication token is missing or empty',
+      );
     }
 
-    const secret = process.env.JWT_SECRET || 'my-super-secret-key';
+    const secret = process.env.JWT_SECRET || 'dev-secret';
 
     try {
       const decoded = jwt.verify(token, secret) as any;
-      if (!decoded || typeof decoded.emailAddress !== 'string' || decoded.emailAddress.trim() === '') {
-        throw new UnauthorizedException('Invalid token: emailAddress is missing');
+      if (
+        !decoded ||
+        typeof decoded.emailAddress !== 'string' ||
+        decoded.emailAddress.trim() === ''
+      ) {
+        throw new UnauthorizedException(
+          'Invalid token: emailAddress is missing',
+        );
       }
       return decoded.emailAddress;
     } catch (error) {
-       if (error instanceof UnauthorizedException) {
-           throw error;
-       }
-       throw new UnauthorizedException('Invalid authentication signature or token');
+      if (error instanceof UnauthorizedException) {
+        throw error;
+      }
+      throw new UnauthorizedException(
+        'Invalid authentication signature or token',
+      );
     }
   }
 }

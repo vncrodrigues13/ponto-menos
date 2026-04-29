@@ -22,7 +22,7 @@ describe('List Punchins Feature (e2e)', () => {
 
   it('create user, create punchins, and list them', async () => {
     const emailAddress = 'test@example.com';
-    const token = jwt.sign({ emailAddress }, 'secret');
+    const token = jwt.sign({ emailAddress }, 'dev-secret');
 
     // 1. Create a User
     await request(app.getHttpServer())
@@ -31,7 +31,7 @@ describe('List Punchins Feature (e2e)', () => {
         fullName: 'Test User',
         birthdate: '1990-01-01',
         emailAddress: emailAddress,
-        companyId: 'comp-1' // Not sure if this is required, but it should be based on CreateUserDto
+        companyId: 'comp-1', // Not sure if this is required, but it should be based on CreateUserDto
       })
       .expect(201);
 
@@ -41,7 +41,7 @@ describe('List Punchins Feature (e2e)', () => {
       .send({
         timestamp: new Date().toISOString(),
         platform: 'web',
-        authToken: token
+        authToken: token,
       })
       .expect(201);
 
@@ -57,9 +57,7 @@ describe('List Punchins Feature (e2e)', () => {
   });
 
   it('fails if emailAddress is missing', async () => {
-    await request(app.getHttpServer())
-      .get('/punchin')
-      .expect(400); // Bad Request for missing param
+    await request(app.getHttpServer()).get('/punchin').expect(400); // Bad Request for missing param
   });
 
   it('fails if user does not exist', async () => {
@@ -78,7 +76,7 @@ describe('List Punchins Feature (e2e)', () => {
         fullName: 'Empty User',
         birthdate: '1990-01-01',
         emailAddress: emailAddress,
-        companyId: 'comp-1'
+        companyId: 'comp-1',
       })
       .expect(201);
 

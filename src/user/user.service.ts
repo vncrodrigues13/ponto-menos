@@ -1,4 +1,9 @@
-import { Injectable, ConflictException, NotFoundException, InternalServerErrorException } from '@nestjs/common';
+import {
+  Injectable,
+  ConflictException,
+  NotFoundException,
+  InternalServerErrorException,
+} from '@nestjs/common';
 import { User } from './user.model';
 import { UserRepositoryPort } from './user.repository.port';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -54,31 +59,40 @@ export class UserService {
 
   async registerUser(dto: CreateUserDto): Promise<User> {
     const endTimer = userRegistrationDuration.startTimer();
-    logger.info({ email: dto.emailAddress }, 'Starting user registration');
+    const normalizedEmail = dto.emailAddress.trim().toLowerCase();
+    logger.info({ email: normalizedEmail }, 'Starting user registration');
 
     try {
-      const existing = await this.repo.findByEmail(dto.emailAddress);
+      const existing = await this.repo.findByEmail(normalizedEmail);
       if (existing) {
         userRegistrationConflictCounter.inc();
-        logger.warn({ email: dto.emailAddress }, 'Attempt to register user with existing email address');
-        throw new ConflictException(`User with email ${dto.emailAddress} already exists`);
+        logger.warn(
+          { email: normalizedEmail },
+          'Attempt to register user with existing email address',
+        );
+        throw new ConflictException(
+          `User with email ${normalizedEmail} already exists`,
+        );
       }
 
       const newUser: User = {
         fullName: dto.fullName,
         birthdate: new Date(dto.birthdate),
-        emailAddress: dto.emailAddress,
+        emailAddress: normalizedEmail,
         companyId: dto.companyId,
       };
 
       const result = await this.repo.save(newUser);
       userRegistrationCounter.inc();
-      logger.info({ email: dto.emailAddress }, 'User registered successfully');
+      logger.info({ email: normalizedEmail }, 'User registered successfully');
       return result;
     } catch (error) {
       if (!(error instanceof ConflictException)) {
         userRegistrationErrorCounter.inc();
-        logger.error({ email: dto.emailAddress, error: error.message }, 'Error on user registration');
+        logger.error(
+          { email: normalizedEmail, error: error.message },
+          'Error on user registration',
+        );
       }
       throw error;
     } finally {
@@ -101,7 +115,10 @@ export class UserService {
     } catch (error) {
       if (!(error instanceof NotFoundException)) {
         userFindByEmailErrorCounter.inc();
-        logger.error({ email, error: error.message }, 'Error on user found by email address');
+        logger.error(
+          { email, error: error.message },
+          'Error on user found by email address',
+        );
       }
       throw error;
     } finally {
